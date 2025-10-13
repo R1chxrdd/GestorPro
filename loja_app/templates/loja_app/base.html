@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GestorPro{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'loja_app/css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}"></body>
+    <header>
+        <h1>GestorPro</h1>
+        <nav>
+    {% if request.resolver_match.url_name != 'dashboard' and user.is_authenticated %}
+        <a href="{% url 'dashboard' %}">🏠 Início</a>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <a href="{% url 'lista_lojas' %}">📄 Ver Lojas</a>
+
+        {% if user.is_staff %}
+            <a href="/admin/">⚙️ Administração</a>
+        {% endif %}
+        <a href="{% url 'logout' %}">🚪 Sair</a>
+    {% else %}
+        <a href="{% url 'login' %}">🔑 Login</a>
+    {% endif %}
+</nav>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{% extends 'loja_app/base.html' %}
+{% load static %}
+
+{% block body_class %}dashboard-page{% endblock %}
+
+{% block title %}Dashboard - GestorPro{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'loja_app/css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-simple-container">
+    <div class="dashboard-simple-content">
+        <h2>Olá, {{ user.username }}!</h2>
+        
+        {% if user.is_staff %}
+            {# --- MENSAGEM PARA O ADMINISTRADOR --- #}
+            <p class="intro-text">
+                Este é o seu painel de administrador. A partir daqui, você pode gerenciar lojas, visualizar relatórios e administrar todas as configurações do sistema.
+            </p>
+        {% else %}
+            {# --- MENSAGEM PARA O CLIENTE (A QUE JÁ EXISTIA) --- #}
+            <p class="intro-text">
+                Este é o seu painel de cliente no GestorPro, e é um prazer recebê-lo! Nossa plataforma foi cuidadosamente desenhada para ser a ponte definitiva entre lojistas apaixonados e clientes como você, fortalecendo a comunidade e o comércio local por meio de uma experiência de navegação simples, segura e intuitiva.
+            </p>
+            <p class="about-link">
+                Conhecer um pouco mais sobre <a href="{% url 'about_us' %}">Sobre nós</a> e nossa missão.
+            </p>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

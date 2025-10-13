@@ -1,0 +1,76 @@
+.about-us-container {
+    padding: 20px 0;
+}
+
+.hero-section {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 40px;
+}
+
+.hero-section h1 {
+    font-size: 2.8em;
+    color: #343a40;
+    margin-bottom: 10px;
+}
+
+.hero-section .subtitle {
+    font-size: 1.2em;
+    color: #6c757d;
+}
+
+.story-content, .mission-content {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 50px;
+    flex-wrap: wrap;
+}
+
+.mission-content {
+    flex-direction: row-reverse;
+}
+
+.story-text, .mission-text {
+    flex: 1;
+    min-width: 300px; 
+}
+
+.story-text h3, .mission-text h3 {
+    font-size: 2em;
+    color: #007bff;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.story-text p, .mission-text p {
+    font-size: 1.1em;
+    line-height: 1.7;
+    color: #495057;
+    margin-bottom: 15px;
+}
+
+.story-image, .mission-image {
+    flex: 1;
+    min-width: 300px;
+    text-align: center;
+}
+
+.story-image img, .mission-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .story-content, .mission-content {
+        flex-direction: column;
+    }
+    .mission-content {
+        flex-direction: column;
+    }
+}

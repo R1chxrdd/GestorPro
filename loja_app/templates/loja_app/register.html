@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Conta - GestorPro</title>
+    <link rel="stylesheet" href="{% static 'loja_app/css/register.css' %}">
+</head>
+<body>
+
+    <div class="register-container">
+        <form method="post" class="register-form">
+            <h2>Criar Nova Conta</h2>
+
+            {% csrf_token %}
+            
+            {{ form.as_p }}
+
+            <button type="submit">Registrar</button>
+
+            <div class="login-link">
+                <p>Já tem uma conta? <a href="{% url 'login' %}">Faça o login</a></p>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

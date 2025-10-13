@@ -1,0 +1,47 @@
+{% extends 'loja_app/base.html' %}
+{% load static %}
+
+{% block title %}Sobre Nós - GestorPro{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'loja_app/css/about_us.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="about-us-container">
+    <div class="hero-section">
+        <h1>Nossa História: Da Ideia à Solução</h1>
+        <p class="subtitle">Conectando Lojas e Clientes com Tecnologia e Paixão.</p>
+    </div>
+
+    <div class="story-content">
+        <div class="story-text">
+            <h3>O Começo de Tudo</h3>
+            <p>
+                A GestorPro nasceu em 2023, a partir de uma observação simples de nossos fundadores, Ricardo e Nicolas: pequenas e médias lojas, cheias de produtos incríveis, muitas vezes lutavam para alcançar um público maior e gerenciar suas operações de forma eficiente. Do outro lado, clientes buscavam uma forma mais fácil e centralizada de descobrir e apoiar o comércio local.
+            </p>
+            <p>
+                Com uma paixão por tecnologia e um forte desejo de fortalecer a comunidade, eles decidiram criar uma ponte. A ideia não era apenas construir um site, mas sim um ecossistema onde a gestão se torna simples para o lojista e a descoberta se torna uma experiência agradável para o cliente.
+            </p>
+        </div>
+        <div class="story-image">
+            <img src="https://img.freepik.com/vetores-premium/icone-de-cor-do-erp-de-controle-de-estoque-entrega-de-encomendas_8071-53103.jpg" alt="Ilustração de gestão de estoque">
+        </div>
+    </div>
+
+    <div class="mission-content">
+        <div class="mission-image">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwmUQLivFGwT88A6CAlojJmOKnmPjUouJVZ4JHXW_Y7jd6kQrIqy0-k_-nQjnSD6N_8JU&usqp=CAU" alt="Ilustração de equipe trabalhando em conjunto">
+        </div>
+        <div class="mission-text">
+            <h3>Nossa Missão Hoje</h3>
+            <p>
+                Hoje, a GestorPro é mais do que uma plataforma; é uma parceira de negócios. Nossa missão é empoderar lojistas com ferramentas de gestão de estoque, vendas e clientes, permitindo que eles foquem no que fazem de melhor: oferecer produtos de qualidade. Para os clientes, somos a vitrine confiável para encontrar as melhores lojas da região.
+            </p>
+            <p>
+                Acreditamos que a tecnologia deve ser uma aliada, simplificando processos e criando conexões. Cada loja cadastrada em nossa plataforma é parte de uma história maior de crescimento e sucesso compartilhado.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

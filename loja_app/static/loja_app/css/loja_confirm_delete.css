@@ -1,0 +1,14 @@
+.delete-box {
+    background-color: #fff3f3;
+    border: 1px solid #f5c6cb;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.botao.excluir {
+    background-color: #dc3545;
+}
+
+.botao.cancelar {
+    background-color: #6c757d;
+}

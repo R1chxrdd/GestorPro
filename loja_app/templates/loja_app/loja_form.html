@@ -1,0 +1,26 @@
+{% extends 'loja_app/base.html' %}
+{% load static %}
+
+{% block title %}{% if form.instance.pk %}Editar Loja{% else %}Cadastrar Loja{% endif %}{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'loja_app/css/loja_form.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <h2>{% if form.instance.pk %}Editar Loja{% else %}Cadastrar Loja{% endif %}</h2>
+
+        <form method="post" class="formulario">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="botao">Salvar</button>
+        </form>
+
+        <a href="{% url 'lista_lojas' %}" class="botao">Voltar</a>
+    </div>
+{% endblock %}
+
+
+
+

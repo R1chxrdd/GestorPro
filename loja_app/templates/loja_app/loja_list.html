@@ -1,0 +1,33 @@
+{% extends 'loja_app/base.html' %}
+{% load static %}
+
+{% block title %}Lista de Lojas{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'loja_app/css/loja_list.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h2 class="titulo-lista">Lista de Lojas</h2>
+    
+    {# Botão de cadastrar só aparece para admins #}
+    {% if user.is_staff %}
+        <a href="{% url 'cadastrar_loja' %}" class="botao">Cadastrar Nova Loja</a>
+    {% endif %}
+
+    <ul class="lista-lojas">
+        {% for loja in lojas %}
+            <li>
+                {{ loja.nome }}
+                
+                {# Botões de editar e excluir só aparecem para admins #}
+                {% if user.is_staff %}
+                    <a href="{% url 'editar_loja' loja.id %}" class="botao">Editar</a>
+                    <a href="{% url 'excluir_loja' loja.id %}" class="botao">Excluir</a>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>Nenhuma loja cadastrada.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

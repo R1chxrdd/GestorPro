@@ -1,0 +1,23 @@
+
+{% extends 'loja_app/base.html' %}
+{% load static %}
+
+{% block title %}Excluir Loja{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'loja_app/css/loja_confirm_delete.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="delete-box">
+        <h2>Excluir Loja</h2>
+        <p>Tem certeza que deseja excluir <strong>{{ loja.nome }}</strong>?</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="botao excluir">Confirmar</button>
+            <a href="{% url 'lista_lojas' %}" class="botao cancelar">Cancelar</a>
+        </form>
+    </div>
+{% endblock %}
+

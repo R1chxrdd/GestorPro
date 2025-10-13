@@ -1,0 +1,9 @@
+.form-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.formulario input, .formulario select {
+    margin-bottom: 15px;
+}
