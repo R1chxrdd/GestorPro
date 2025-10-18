@@ -74,3 +74,38 @@
         flex-direction: column;
     }
 }
+
+.back-button-container {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.btn-back {
+    display: inline-block;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-back:hover {
+    background-color: #0056b3;
+    color: #fff;
+    text-decoration: none;
+}
+
+body.dashboard-page {
+    background-image: url('https://static.vecteezy.com/ti/vetor-gratis/p1/20970628-conexao-de-rede-global-ponto-de-mapa-mundial-e-conceito-de-composicao-de-linha-de-negocios-globais-ilustracaoial-vetor.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover; 
+    background-attachment: fixed; 
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

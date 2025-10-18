@@ -8,7 +8,6 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 
 # Dashboard 
-@login_required
 def home(request):
     return render(request, 'loja_app/home.html')
 
