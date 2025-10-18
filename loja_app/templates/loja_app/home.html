@@ -3,32 +3,47 @@
 
 {% block body_class %}dashboard-page{% endblock %}
 
-{% block title %}Dashboard - GestorPro{% endblock %}
+{% block title %}Home - GestorPro{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'loja_app/css/home.css' %}">
+<link rel="stylesheet" href="{% static 'loja_app/css/home.css' %}">
 {% endblock %}
 
 {% block content %}
+<div class="top-bar">
+    {% if user.is_authenticated %}
+        <span>Bem-vindo, {{ user.username }}!</span>
+        <a href="{% url 'dashboard' %}" class="dashboard-btn">Dashboard</a>
+        <a href="{% url 'logout' %}" class="logout-btn">Sair</a>
+    {% else %}
+        <a href="{% url 'login' %}" class="login-btn">Login</a>
+        <a href="{% url 'registrar' %}" class="register-btn">Criar conta</a>
+    {% endif %}
+</div>
+
 <div class="dashboard-simple-container">
     <div class="dashboard-simple-content">
-        <h2>Olá, {{ user.username }}!</h2>
-        
-        {% if user.is_staff %}
-            {# --- MENSAGEM PARA O ADMINISTRADOR --- #}
-            <p class="intro-text">
-                Este é o seu painel de administrador. A partir daqui, você pode gerenciar lojas, visualizar relatórios e administrar todas as configurações do sistema.
-            </p>
+        <h2>Olá, {{ user.username|default:"visitante" }}!</h2>
+
+        {% if user.is_authenticated %}
+            {% if user.is_staff %}
+                <p class="intro-text">
+                    Este é o seu painel de administrador. A partir daqui, você pode gerenciar lojas, visualizar relatórios e administrar todas as configurações do sistema.
+                </p>
+            {% else %}
+                <p class="intro-text">
+                    Bem-vindo de volta ao seu painel de cliente do GestorPro! Continue explorando e aproveite todas as funcionalidades disponíveis para gerenciar sua loja com praticidade.
+                </p>
+            {% endif %}
         {% else %}
-            {# --- MENSAGEM PARA O CLIENTE (A QUE JÁ EXISTIA) --- #}
             <p class="intro-text">
-                Este é o seu painel de cliente no GestorPro, e é um prazer recebê-lo! Nossa plataforma foi cuidadosamente desenhada para ser a ponte definitiva entre lojistas apaixonados e clientes como você, fortalecendo a comunidade e o comércio local por meio de uma experiência de navegação simples, segura e intuitiva.
+                Este é o seu painel de cliente no GestorPro, e é um prazer recebê-lo!
+                Nossa plataforma foi cuidadosamente desenhada para ser a ponte definitiva entre lojistas apaixonados e clientes como você, fortalecendo a comunidade e o comércio local por meio de uma experiência de navegação simples, segura e intuitiva.
             </p>
             <p class="about-link">
-                Conhecer um pouco mais sobre <a href="{% url 'about_us' %}">Sobre nós</a> e nossa missão.
+                Conheça um pouco mais <a href="{% url 'about_us' %}">sobre nós</a> e nossa missão.
             </p>
         {% endif %}
-
     </div>
 </div>
 {% endblock %}

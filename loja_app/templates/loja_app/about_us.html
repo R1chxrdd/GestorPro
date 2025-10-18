@@ -3,6 +3,8 @@
 
 {% block title %}Sobre Nós - GestorPro{% endblock %}
 
+{% block body_class %}dashboard-page{% endblock %}
+
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'loja_app/css/about_us.css' %}">
 {% endblock %}
@@ -42,6 +44,10 @@
                 Acreditamos que a tecnologia deve ser uma aliada, simplificando processos e criando conexões. Cada loja cadastrada em nossa plataforma é parte de uma história maior de crescimento e sucesso compartilhado.
             </p>
         </div>
+    </div>
+
+    <div class="back-button-container">
+        <a href="{% url 'home' %}" class="btn-back">Voltar ao Início</a>
     </div>
 </div>
 {% endblock %}
