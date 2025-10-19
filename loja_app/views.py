@@ -13,8 +13,7 @@ def home(request):
 
 
 
-# Listar lojas 
-@login_required
+# Listar lojas (AGORA É PÚBLICA)
 def lista_lojas(request):
     lojas = Loja.objects.all()
     return render(request, 'loja_app/loja_list.html', {'lojas': lojas})
@@ -65,7 +64,7 @@ def excluir_loja(request, id):
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('home') # CORRIGIDO AQUI
 
 
 

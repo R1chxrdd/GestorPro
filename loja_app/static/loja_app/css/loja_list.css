@@ -1,8 +1,54 @@
+
+body.lojas-page {
+    background-image: url('https://static.vecteezy.com/ti/vetor-gratis/p1/20970628-conexao-de-rede-global-ponto-de-mapa-mundial-e-conceito-de-composicao-de-linha-de-negocios-globais-ilustracaoial-vetor.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover; 
+    background-attachment: fixed; 
+}
+
+main {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+
 .titulo-lista {
     color: #333;
     margin-bottom: 20px;
 }
 
 .lista-lojas li {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border: 1px solid #eee;
     margin-bottom: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.back-button-container {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.btn-back {
+    display: inline-block;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-back:hover {
+    background-color: #0056b3;
 }
