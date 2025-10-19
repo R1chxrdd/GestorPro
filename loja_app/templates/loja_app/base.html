@@ -8,23 +8,26 @@
     <link rel="stylesheet" href="{% static 'loja_app/css/base.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
-<body class="{% block body_class %}{% endblock %}"></body>
+<body class="{% block body_class %}{% endblock %}">
     <header>
         <h1>GestorPro</h1>
         <nav>
-    {% if request.resolver_match.url_name != 'dashboard' and user.is_authenticated %}
-        <a href="{% url 'dashboard' %}">🏠 Início</a>
-    {% endif %}
+            {# CONDIÇÃO ATUALIZADA: Esconde o link "Início" também na página de lojas #}
+            {% if user.is_authenticated and request.resolver_match.url_name != 'dashboard' and request.resolver_match.url_name != 'lista_lojas' %}
+            {% endif %}
 
-    {% if user.is_authenticated %}
-        <a href="{% url 'lista_lojas' %}">📄 Ver Lojas</a>
+            {# CONDIÇÃO NOVA: Só mostra o link "Ver Lojas" se a página atual NÃO for a lista de lojas #}
+            {% if request.resolver_match.url_name != 'lista_lojas' %}
+                <a href="{% url 'lista_lojas' %}">📄 Ver Lojas</a>
+            {% endif %}
 
-        {% if user.is_staff %}
-            <a href="/admin/">⚙️ Administração</a>
-        {% endif %}
-        <a href="{% url 'logout' %}">🚪 Sair</a>
-    {% endif %}
-</nav>
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                    <a href="/admin/">⚙️ Administração</a>
+                {% endif %}
+            {% else %}
+            {% endif %}
+        </nav>
     </header>
 
     <main>
