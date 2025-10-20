@@ -1,0 +1,28 @@
+{% extends 'loja_app/base.html' %}
+{% load static %} {# Adicione esta linha se não estiver lá #}
+
+{% block body_class %}dashboard-page{% endblock %} {# ADICIONADO #}
+{% block title %}Categorias{% endblock %}
+
+{% block extra_css %} {# ADICIONADO para incluir o CSS específico #}
+<link rel="stylesheet" href="{% static 'loja_app/css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="dashboard-simple-container"> {# ENVOLVENDO O CONTEÚDO #}
+        <div class="dashboard-simple-content"> {# ENVOLVENDO O CONTEÚDO #}
+            <h2>Categorias de Produtos</h2>
+            <a href="{% url 'cadastrar_categoria' %}" class="botao">Nova Categoria</a>
+            <p>
+                {% for categoria in categorias %}
+                    <li>{{ categoria.nome }} <a href="{% url 'excluir_categoria' categoria.id %}">Excluir</a></li>
+                {% empty %}
+                    <p>Nenhuma categoria cadastrada.</p>
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+    <div class="back-button-container" style="margin-top: 20px;">
+                <a href="{% url 'dashboard' %}" class="botao">Voltar</a>
+            </div>
+{% endblock %}

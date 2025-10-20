@@ -1,0 +1,46 @@
+{% extends 'loja_app/base.html' %}
+{% load static %} {# Adicione esta linha se não estiver lá #}
+
+{% block body_class %}dashboard-page{% endblock %} {# ADICIONADO #}
+{% block title %}Fornecedores{% endblock %}
+
+{% block extra_css %} {# ADICIONADO para incluir o CSS específico #}
+<link rel="stylesheet" href="{% static 'loja_app/css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="dashboard-simple-container"> {# ENVOLVENDO O CONTEÚDO #}
+        <div class="dashboard-simple-content"> {# ENVOLVENDO O CONTEÚDO #}
+            <h2>Fornecedores</h2>
+            <a href="{% url 'cadastrar_fornecedor' %}" class="botao">Novo Fornecedor</a>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CNPJ</th>
+                        <th>Telefone</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fornecedor in fornecedores %}
+                    <tr>
+                        <td>{{ fornecedor.nome }}</td>
+                        <td>{{ fornecedor.cnpj|default:"-" }}</td>
+                        <td>{{ fornecedor.telefone|default:"-" }}</td>
+                        <td>
+                            <a href="{% url 'editar_fornecedor' fornecedor.id %}">Editar</a>
+                            <a href="{% url 'excluir_fornecedor' fornecedor.id %}">Excluir</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <p><td colspan="4">Nenhum fornecedor cadastrado.</td></p>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="back-button-container" style="margin-top: 20px;">
+                <a href="{% url 'dashboard' %}" class="botao">Voltar</a>
+            </div>
+{% endblock %}

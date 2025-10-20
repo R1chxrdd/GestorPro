@@ -1,0 +1,11 @@
+{% extends 'loja_app/base.html' %}
+{% block title %}Cadastrar Categoria{% endblock %}
+{% block content %}
+    <h2>Cadastrar Nova Categoria</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="botao">Salvar</button>
+        <a href="{% url 'lista_categorias' %}" class="botao cancelar">Voltar</a>
+    </form>
+{% endblock %}

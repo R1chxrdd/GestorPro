@@ -1,0 +1,11 @@
+{% extends 'loja_app/base.html' %}
+{% block title %}Formulário de Fornecedor{% endblock %}
+{% block content %}
+    <h2>Formulário de Fornecedor</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="botao">Salvar</button>
+        <a href="{% url 'lista_fornecedores' %}" class="botao cancelar">Voltar</a>
+    </form>
+{% endblock %}

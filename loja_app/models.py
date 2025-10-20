@@ -9,3 +9,17 @@ class Loja(models.Model):
     def __str__(self):
         return self.nome
 
+class Categoria(models.Model):
+    nome = models.CharField(max_length=100, verbose_name="Nome da Categoria")
+
+    def __str__(self):
+        return self.nome
+
+class Fornecedor(models.Model):
+    nome = models.CharField(max_length=200, verbose_name="Nome do Fornecedor")
+    cnpj = models.CharField(max_length=20, verbose_name="CNPJ", unique=True, blank=True, null=True)
+    telefone = models.CharField(max_length=15, verbose_name="Telefone", blank=True, null=True)
+    email = models.EmailField(verbose_name="E-mail", blank=True, null=True)
+
+    def __str__(self):
+        return self.nome

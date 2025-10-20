@@ -18,12 +18,20 @@
 
             {# CONDIÇÃO NOVA: Só mostra o link "Ver Lojas" se a página atual NÃO for a lista de lojas #}
             {% if request.resolver_match.url_name != 'lista_lojas' %}
-                <a href="{% url 'lista_lojas' %}">📄 Ver Lojas</a>
+                <a href="{% url 'lista_lojas' %}">Ver Lojas</a>
             {% endif %}
 
             {% if user.is_authenticated %}
                 {% if user.is_staff %}
-                    <a href="/admin/">⚙️ Administração</a>
+                   {% if request.resolver_match.url_name != 'lista_categorias' %}
+                        <a href="{% url 'lista_categorias' %}">Categorias</a>
+                    {% endif %}
+                    
+                    {% if request.resolver_match.url_name != 'lista_fornecedores' %}
+                        <a href="{% url 'lista_fornecedores' %}">Fornecedores</a>
+                    {% endif %}
+
+                    <a href="/admin/">Administração</a>
                 {% endif %}
             {% else %}
             {% endif %}
@@ -36,6 +44,7 @@
     </main>
 
     <footer>
+        
     </footer>
 </body>
 </html>
