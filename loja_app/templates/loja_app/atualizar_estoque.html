@@ -1,0 +1,29 @@
+{% extends 'loja_app/base.html' %}
+{% load static %}
+
+{% block body_class %}dashboard-page{% endblock %}
+{% block title %}Atualizar Estoque{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'loja_app/css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-simple-container">
+    <div class="dashboard-simple-content">
+        <h2>Atualizar Estoque de: {{ produto.nome }}</h2>
+        <p>Estoque atual: <strong>{{ estoque.quantidade }} unidades</strong></p>
+        <hr>
+        <form method="post" style="text-align: left; margin-top: 20px;">
+            {% csrf_token %}
+            <p>
+                Insira a quantidade para movimentar. <br>
+                Use um número positivo para <strong>ENTRADA</strong> (ex: 50) e um número negativo para <strong>SAÍDA</strong> (ex: -10).
+            </p>
+            {{ form.as_p }}
+            <button type="submit" class="botao">Salvar Movimentação</button>
+            <a href="{% url 'lista_produtos' %}" class="botao cancelar">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

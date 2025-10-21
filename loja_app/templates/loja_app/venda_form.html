@@ -1,0 +1,33 @@
+{% extends 'loja_app/base.html' %}
+{% load static %}
+
+{% block body_class %}dashboard-page{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'loja_app/css/home.css' %}">{% endblock %}
+
+{% block content %}
+<div class="dashboard-simple-container">
+    <div class="dashboard-simple-content">
+        <h2>{{ titulo }}</h2>
+        <form method="post" style="text-align: left;">
+            {% csrf_token %}
+            {{ item_formset.management_form }}
+            
+            <h4>Dados da Venda</h4>
+            {{ venda_form.as_p }}
+            <hr>
+            <h4>Itens da Venda</h4>
+            {% for form in item_formset %}
+                <div class="item-form">
+                    {{ form.as_p }}
+                </div>
+                <hr>
+            {% endfor %}
+            
+            <button type="submit" class="botao">Finalizar Venda</button>
+            <a href="{% url 'lista_vendas' %}" class="botao cancelar">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

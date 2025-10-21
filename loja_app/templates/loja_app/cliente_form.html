@@ -1,0 +1,23 @@
+{% extends 'loja_app/base.html' %}
+{% load static %}
+
+{% block body_class %}dashboard-page{% endblock %}
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'loja_app/css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-simple-container">
+    <div class="dashboard-simple-content">
+        <h2>{{ titulo }}</h2>
+        <form method="post" style="text-align: left;">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="botao">Salvar</button>
+            <a href="{% url 'lista_clientes' %}" class="botao cancelar">Voltar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

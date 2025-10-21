@@ -31,6 +31,18 @@
                         <a href="{% url 'lista_fornecedores' %}">Fornecedores</a>
                     {% endif %}
 
+                    {% if 'produto' not in request.resolver_match.url_name %}
+                        <a href="{% url 'lista_produtos' %}">Produtos</a>
+                    {% endif %}
+
+                    {% if 'cliente' not in request.resolver_match.url_name %}
+                        <a href="{% url 'lista_clientes' %}">Clientes</a>
+                    {% endif %}
+
+                    {% if 'venda' not in request.resolver_match.url_name %}
+                        <a href="{% url 'lista_vendas' %}">Vendas</a>
+                    {% endif %}
+
                     <a href="/admin/">Administração</a>
                 {% endif %}
             {% else %}

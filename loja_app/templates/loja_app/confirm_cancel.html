@@ -1,0 +1,29 @@
+{% extends 'loja_app/base.html' %}
+{% load static %}
+
+{% block body_class %}dashboard-page{% endblock %}
+{% block title %}Cancelar Venda{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'loja_app/css/home.css' %}">{% endblock %}
+
+{% block content %}
+<div class="dashboard-simple-container">
+    <div class="dashboard-simple-content">
+        <h2>Cancelar Venda #{{ venda.id }}</h2>
+        <p>
+            Tem certeza de que deseja cancelar esta venda?
+            <strong>Esta ação não pode ser desfeita.</strong>
+        </p>
+        <p>Os itens abaixo serão retornados ao estoque:</p>
+        <ul>
+            {% for item in venda.itens.all %}
+                <li>{{ item.quantidade }}x {{ item.produto.nome }}</li>
+            {% endfor %}
+        </ul>
+        <form method="post" style="margin-top: 20px;">
+            {% csrf_token %}
+            <button type="submit" class="botao excluir">Confirmar Cancelamento</button>
+            <a href="{% url 'lista_vendas' %}" class="botao cancelar">Voltar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

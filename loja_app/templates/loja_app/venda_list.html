@@ -1,0 +1,53 @@
+{% extends 'loja_app/base.html' %}
+{% load static %}
+
+{% block body_class %}dashboard-page{% endblock %}
+{% block title %}Histórico de Vendas{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'loja_app/css/home.css' %}">{% endblock %}
+
+{% block content %}
+<div class="dashboard-simple-container">
+    <div class="dashboard-simple-content" style="max-width: 1200px;">
+        <h2>Histórico de Vendas</h2>
+        <a href="{% url 'registrar_venda' %}" class="botao">Registrar Nova Venda</a>
+        <table style="width: 100%; margin-top: 20px; text-align: left;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Data</th>
+                    <th>Cliente</th>
+                    <th>Valor Total</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for venda in vendas %}
+                <tr>
+                    <td>#{{ venda.id }}</td>
+                    <td>{{ venda.data_venda|date:"d/m/Y H:i" }}</td>
+                    <td>{{ venda.cliente.nome|default:"-" }}</td>
+                    <td>R$ {{ venda.valor_total }}</td>
+                    <td>
+                        <span class="status-{{ venda.status|lower }}">
+                            {{ venda.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if venda.status == 'CONCLUIDA' %}
+                            <a href="{% url 'cancelar_venda' venda.id %}" class="botao-cancelar">Cancelar</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6">Nenhuma venda registrada.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="back-button-container" style="margin-top: 20px;">
+            <a href="{% url 'dashboard' %}" class="botao">Voltar</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

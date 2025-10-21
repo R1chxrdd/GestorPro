@@ -1,0 +1,51 @@
+{% extends 'loja_app/base.html' %}
+{% load static %}
+
+{% block body_class %}dashboard-page{% endblock %}
+{% block title %}Produtos{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'loja_app/css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-simple-container">
+    <div class="dashboard-simple-content" style="max-width: 1200px;">
+        <h2>Lista de Produtos</h2>
+        <a href="{% url 'cadastrar_produto' %}" class="botao">Novo Produto</a>
+        <table style="width: 100%; margin-top: 20px; text-align: left;">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Preço Venda</th>
+                    <th>Categoria</th>
+                    <th>Loja</th>
+                    <th>Estoque</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produto in produtos %}
+                <tr>
+                    <td>{{ produto.nome }}</td>
+                    <td>R$ {{ produto.preco_venda }}</td>
+                    <td>{{ produto.categoria.nome|default:"-" }}</td>
+                    <td>{{ produto.loja.nome }}</td>
+                    <td>{{ produto.estoque.quantidade }} un.</td>
+                    <td>
+                        <a href="{% url 'editar_produto' produto.id %}">Editar</a>
+                        <a href="{% url 'excluir_produto' produto.id %}">Excluir</a>
+                        <a href="{% url 'atualizar_estoque' produto.id %}">Estoque</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6">Nenhum produto cadastrado.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="back-button-container" style="margin-top: 20px;">
+            <a href="{% url 'dashboard' %}" class="botao">Voltar</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

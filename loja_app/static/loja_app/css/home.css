@@ -1,4 +1,4 @@
-/* --- Fundo geral da página --- */
+
 body.dashboard-page {
     background-image: url('https://static.vecteezy.com/ti/vetor-gratis/p1/20970628-conexao-de-rede-global-ponto-de-mapa-mundial-e-conceito-de-composicao-de-linha-de-negocios-globais-ilustracaoial-vetor.jpg');
     background-repeat: no-repeat;
@@ -9,7 +9,7 @@ body.dashboard-page {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* --- Barra superior (login/logout) --- */
+
 .top-bar {
     display: flex;
     justify-content: flex-end;
@@ -45,7 +45,6 @@ body.dashboard-page {
     transform: translateY(-1px);
 }
 
-/* --- Conteúdo principal --- */
 .dashboard-simple-container {
     display: flex;
     justify-content: center;
@@ -88,4 +87,14 @@ body.dashboard-page {
 
 .dashboard-simple-content .about-link a:hover {
     text-decoration: underline;
+}
+
+.status-concluida {
+    color: rgb(7, 229, 7);
+    font-weight: bold;
+}
+
+.status-cancelada {
+    color: red;
+    font-weight: bold;
 }

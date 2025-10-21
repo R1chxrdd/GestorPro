@@ -1,0 +1,46 @@
+{% extends 'loja_app/base.html' %}
+{% load static %}
+
+{% block body_class %}dashboard-page{% endblock %}
+{% block title %}Clientes{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'loja_app/css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-simple-container">
+    <div class="dashboard-simple-content" style="max-width: 1200px;">
+        <h2>Lista de Clientes</h2>
+        <a href="{% url 'cadastrar_cliente' %}" class="botao">Novo Cliente</a>
+        <table style="width: 100%; margin-top: 20px; text-align: left;">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Telefone</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliente in clientes %}
+                <tr>
+                    <td>{{ cliente.nome }}</td>
+                    <td>{{ cliente.cpf|default:"-" }}</td>
+                    <td>{{ cliente.telefone|default:"-" }}</td>
+                    <td>
+                        <a href="{% url 'editar_cliente' cliente.id %}">Editar</a>
+                        <a href="{% url 'excluir_cliente' cliente.id %}">Excluir</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">Nenhum cliente cadastrado.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="back-button-container" style="margin-top: 20px;">
+            <a href="{% url 'dashboard' %}" class="botao">Voltar</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
