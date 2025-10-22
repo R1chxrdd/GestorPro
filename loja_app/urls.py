@@ -37,4 +37,5 @@ urlpatterns = [
     path('vendas/', views.lista_vendas, name='lista_vendas'),
     path('vendas/registrar/', views.registrar_venda, name='registrar_venda'),
     path('vendas/cancelar/<int:venda_id>/', views.cancelar_venda, name='cancelar_venda'),
+    path('api/get-produtos-por-loja/', views.get_produtos_por_loja, name='get_produtos_por_loja'),
 ]

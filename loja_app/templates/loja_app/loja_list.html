@@ -31,6 +31,16 @@
         {% endfor %}
     </ul>
 
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <div class="back-button-container">
         <a href="{% url 'home' %}" class="btn-back">Voltar</a>
     </div>

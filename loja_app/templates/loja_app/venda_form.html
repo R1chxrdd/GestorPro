@@ -30,4 +30,36 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // CORREÇÃO: Alterado de '#id_cliente' para '#id_loja'
+        const lojaSelect = document.querySelector('#id_loja'); 
+        const produtoSelect = document.querySelector('#id_form-0-produto');
+
+        // Adiciona um evento que dispara quando o campo LOJA é alterado
+        lojaSelect.addEventListener('change', function() {
+            const lojaId = this.value;
+            
+            // Limpa as opções atuais do campo de produto
+            produtoSelect.innerHTML = '<option value="">---------</option>';
+
+            if (lojaId) {
+                // Busca no nosso API os produtos que pertencem à loja selecionada
+                fetch(`/api/get-produtos-por-loja/?loja_id=${lojaId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Preenche o campo de produto com as novas opções
+                        data.forEach(function(produto) {
+                            const option = new Option(produto.nome, produto.id);
+                            produtoSelect.add(option);
+                        });
+                    });
+            }
+        });
+
+        // Dispara o evento 'change' uma vez no carregamento da página para filtrar, caso uma loja já esteja selecionada
+        lojaSelect.dispatchEvent(new Event('change'));
+    });
+</script>
 {% endblock %}
