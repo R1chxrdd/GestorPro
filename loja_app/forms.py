@@ -7,7 +7,7 @@ from .models import Loja, Categoria, Fornecedor, Produto, Cliente, Venda, ItensV
 class LojaForm(forms.ModelForm):
     class Meta:
         model = Loja
-        fields = ['nome', 'endereco', 'telefone', 'email']
+        fields = ['nome', 'endereco', 'telefone', 'email', 'cnpj_loja']
 
 class UserRegisterForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
