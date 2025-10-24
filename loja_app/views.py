@@ -383,3 +383,13 @@ def get_produtos_por_loja(request):
     loja_id = request.GET.get('loja_id')
     produtos = Produto.objects.filter(loja_id=loja_id).order_by('nome')
     return JsonResponse(list(produtos.values('id', 'nome')), safe=False)
+
+@staff_member_required
+def lista_itens_venda(request):
+    itens_venda = ItensVenda.objects.all().order_by('-venda__data_venda')
+    return render(request, 'loja_app/itens_venda_list.html', {'itens_venda': itens_venda})
+
+@staff_member_required
+def lista_movimentacoes_estoque(request):
+    movimentacoes = MovimentacaoEstoque.objects.all().order_by('-data')
+    return render(request, 'loja_app/movimentacao_estoque_list.html', {'movimentacoes': movimentacoes})

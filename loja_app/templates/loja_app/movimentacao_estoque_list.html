@@ -1,0 +1,46 @@
+{% extends 'loja_app/base.html' %}
+{% load static %}
+
+{% block body_class %}dashboard-page{% endblock %}
+{% block title %}Movimentações de Estoque{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'loja_app/css/home.css' %}">{% endblock %}
+
+{% block content %}
+<div class="dashboard-simple-container">
+    <div class="dashboard-simple-content" style="max-width: 1200px;">
+        <h2>Movimentações de Estoque</h2>
+        <table style="width: 100%; margin-top: 20px; text-align: left;">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Tipo</th>
+                    <th>Descrição</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mov in movimentacoes %}
+                <tr>
+                    <td>{{ mov.data|date:"d/m/Y H:i" }}</td>
+                    <td>{{ mov.produto.nome }}</td>
+                    <td>{{ mov.quantidade }}</td>
+                    <td>
+                        <span class="movimentacao-tipo-{{ mov.tipo|lower }}">
+                            {{ mov.get_tipo_display }}
+                        </span>
+                    </td>
+                    <td>{{ mov.descricao|default:"-" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">Nenhuma movimentação de estoque registrada.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="back-button-container" style="margin-top: 20px;">
+            <a href="{% url 'dashboard' %}" class="botao">Voltar</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

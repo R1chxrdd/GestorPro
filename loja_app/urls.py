@@ -38,4 +38,6 @@ urlpatterns = [
     path('vendas/registrar/', views.registrar_venda, name='registrar_venda'),
     path('vendas/cancelar/<int:venda_id>/', views.cancelar_venda, name='cancelar_venda'),
     path('api/get-produtos-por-loja/', views.get_produtos_por_loja, name='get_produtos_por_loja'),
+    path('historico/itens-vendidos/', views.lista_itens_venda, name='lista_itens_venda'),
+    path('historico/movimentacoes-estoque/', views.lista_movimentacoes_estoque, name='lista_movimentacoes_estoque'),
 ]

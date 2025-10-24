@@ -39,8 +39,16 @@
                         <a href="{% url 'lista_clientes' %}">Clientes</a>
                     {% endif %}
 
-                    {% if 'venda' not in request.resolver_match.url_name %}
+                    {% if request.resolver_match.url_name != 'lista_vendas' %}
                         <a href="{% url 'lista_vendas' %}">Vendas</a>
+                    {% endif %}
+
+                    {% if request.resolver_match.url_name != 'lista_itens_venda' %}
+                        <a href="{% url 'lista_itens_venda' %}">Itens Vendidos</a>
+                    {% endif %}
+
+                    {% if request.resolver_match.url_name != 'lista_movimentacoes_estoque' %}
+                        <a href="{% url 'lista_movimentacoes_estoque' %}">Mov. Estoque</a>
                     {% endif %}
 
                     <a href="/admin/">Administração</a>
@@ -53,9 +61,4 @@
         {% block content %}
         {% endblock %}
     </main>
-
-    <footer>
-        
-    </footer>
-</body>
 </html>

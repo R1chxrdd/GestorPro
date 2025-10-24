@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    background-color: #f8f8f8;
+    background-color: #ffffff;
 }
 
 header {
@@ -60,15 +60,15 @@ footer {
 
 .messages-container {
     text-align: center;
-    margin: 15px auto;
-    max-width: 800px;
-    padding: 0 20px;
+    margin-top: 20px;
+    margin-bottom: 20px; 
 }
 
 .message {
     padding: 15px;
     border-radius: 5px;
-    margin-bottom: 15px;
     font-weight: bold;
     border: 1px solid transparent;
 }
+
+

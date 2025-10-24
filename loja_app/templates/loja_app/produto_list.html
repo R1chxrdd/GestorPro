@@ -43,6 +43,16 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+            <div class="message message-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
         <div class="back-button-container" style="margin-top: 20px;">
             <a href="{% url 'dashboard' %}" class="botao">Voltar</a>
         </div>

@@ -98,3 +98,13 @@ body.dashboard-page {
     color: red;
     font-weight: bold;
 }
+
+.movimentacao-tipo-entrada {
+    color: green;
+    font-weight: bold;
+}
+
+.movimentacao-tipo-saida {
+    color: red;
+    font-weight: bold;
+}
