@@ -12,49 +12,28 @@
     <header>
         <h1>GestorPro</h1>
         <nav>
-
-            {% if user.is_authenticated and request.resolver_match.url_name != 'dashboard' and request.resolver_match.url_name != 'lista_lojas' %}
-            {% endif %}
-
-         
-            {% if request.resolver_match.url_name != 'lista_lojas' %}
-                <a href="{% url 'lista_lojas' %}">Ver Lojas</a>
-            {% endif %}
+            
+            <a href="{% url 'lista_lojas' %}">Ver Lojas</a>
 
             {% if user.is_authenticated %}
+                
                 {% if user.is_staff %}
-                   {% if request.resolver_match.url_name != 'lista_categorias' %}
-                        <a href="{% url 'lista_categorias' %}">Categorias</a>
-                    {% endif %}
-                    
-                    {% if request.resolver_match.url_name != 'lista_fornecedores' %}
-                        <a href="{% url 'lista_fornecedores' %}">Fornecedores</a>
-                    {% endif %}
-
-                    {% if 'produto' not in request.resolver_match.url_name %}
-                        <a href="{% url 'lista_produtos' %}">Produtos</a>
-                    {% endif %}
-
-                    {% if 'cliente' not in request.resolver_match.url_name %}
-                        <a href="{% url 'lista_clientes' %}">Clientes</a>
-                    {% endif %}
-
-                    {% if request.resolver_match.url_name != 'lista_vendas' %}
-                        <a href="{% url 'lista_vendas' %}">Vendas</a>
-                    {% endif %}
-
-                    {% if request.resolver_match.url_name != 'lista_itens_venda' %}
-                        <a href="{% url 'lista_itens_venda' %}">Itens Vendidos</a>
-                    {% endif %}
-
-                    {% if request.resolver_match.url_name != 'lista_movimentacoes_estoque' %}
-                        <a href="{% url 'lista_movimentacoes_estoque' %}">Mov. Estoque</a>
-                    {% endif %}
-
+                    <a href="{% url 'lista_categorias' %}">Categorias</a>
+                    <a href="{% url 'lista_fornecedores' %}">Fornecedores</a>
+                    <a href="{% url 'lista_produtos' %}">Produtos</a>
+                    <a href="{% url 'lista_clientes' %}">Clientes</a>
+                    <a href="{% url 'lista_vendas' %}">Vendas</a>
+                    <a href="{% url 'lista_itens_venda' %}">Itens Vendidos</a>
+                    <a href="{% url 'lista_movimentacoes_estoque' %}">Mov. Estoque</a>
                     <a href="/admin/">Administração</a>
+
+                {% else %}
+                    <a href="{% url 'meu_historico_compras' %}">Meu Histórico</a>
+                
                 {% endif %}
+
             {% else %}
-            {% endif %}
+                {% endif %}
         </nav>
     </header>
     <main>

@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.conf import settings
 
 class Loja(models.Model):
     nome = models.CharField(max_length=100, verbose_name="Nome da Loja")
@@ -39,6 +40,7 @@ class Fornecedor(models.Model):
         return self.nome
 
 class Cliente(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     nome = models.CharField(max_length=200, verbose_name="Nome do Cliente")
     cpf = models.CharField(max_length=14, verbose_name="CPF", unique=True, blank=True, null=True)
     telefone = models.CharField(max_length=15, verbose_name="Telefone", blank=True, null=True)

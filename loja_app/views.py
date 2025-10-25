@@ -116,6 +116,7 @@ def registrar_view(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
+            Cliente.objects.create(user=user, nome=user.username)
             login(request, user)
             messages.success(request, 'Registro bem-sucedido!')
             return redirect('dashboard')
@@ -128,7 +129,7 @@ def registrar_view(request):
 # LOJAS
 # ------------------------------
 
-@staff_member_required
+@login_required
 def lista_lojas(request):
     lojas = Loja.objects.all()
     return render(request, 'loja_app/loja_list.html', {'lojas': lojas})
@@ -725,3 +726,30 @@ def lista_itens_venda(request):
 def lista_movimentacoes_estoque(request):
     movimentacoes = MovimentacaoEstoque.objects.all().order_by('-data')
     return render(request, 'loja_app/movimentacao_estoque_list.html', {'movimentacoes': movimentacoes})
+
+# ------------------------------
+# HISTÓRICO DE COMPRAS (CLIENTE)
+# ------------------------------
+@login_required
+def meu_historico_compras(request):
+    vendas_cliente = []
+    cliente_profile = None
+    
+    # Apenas usuários não-staff (clientes) devem ter um histórico de compras pessoal
+    if not request.user.is_staff:
+        try:
+            # Tenta encontrar o perfil de cliente vinculado a este usuário
+            cliente_profile = Cliente.objects.get(user=request.user)
+            # Filtra as vendas apenas para este cliente
+            vendas_cliente = Venda.objects.filter(cliente=cliente_profile).order_by('-data_venda')
+        except Cliente.DoesNotExist:
+            # O usuário logado não tem um perfil de cliente
+            # (Talvez um usuário antigo antes da mudança ou um erro)
+            messages.error(request, 'Não foi possível encontrar seu perfil de cliente.')
+            pass 
+
+    context = {
+        'vendas': vendas_cliente,
+        'cliente_profile': cliente_profile
+    }
+    return render(request, 'loja_app/meu_historico_compras.html', context)
