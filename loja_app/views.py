@@ -1,6 +1,10 @@
+import json
+from django.core.exceptions import FieldDoesNotExist
+from django.db import models as django_models
 from django.shortcuts import render, redirect, get_object_or_404
 from django.forms import formset_factory
 from django.db import transaction, IntegrityError
+from django.db.models import Prefetch
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -19,6 +23,79 @@ from .forms import (
     ProdutoForm, MovimentacaoEstoqueForm, ClienteForm, VendaForm, ItemVendaForm
 )
 
+def _is_json_request(request):
+    content_type = request.META.get('CONTENT_TYPE', '')
+    return 'application/json' in content_type
+
+
+def _load_json_payload(request):
+    try:
+        raw_body = request.body.decode('utf-8').strip()
+    except UnicodeDecodeError as exc:
+        raise ValueError('Corpo da requisição inválido.') from exc
+
+    if not raw_body:
+        return {}
+
+    try:
+        payload = json.loads(raw_body)
+    except json.JSONDecodeError as exc:
+        raise ValueError('JSON inválido.') from exc
+
+    if not isinstance(payload, dict):
+        raise ValueError('O corpo da requisição deve ser um objeto JSON.')
+
+    return payload
+
+
+def _update_instance_from_data(instance, data, allowed_fields):
+    """Atualiza ``instance`` com dados parciais ignorando valores ``None``."""
+
+    if not data:
+        return []
+
+    meta = instance._meta
+    updated_fields = []
+
+    for field_name, value in data.items():
+        if field_name not in allowed_fields or value is None:
+            continue
+
+        try:
+            field = meta.get_field(field_name)
+        except FieldDoesNotExist:
+            continue
+
+        if isinstance(field, django_models.ForeignKey):
+            related_model = field.remote_field.model
+            if value is None:
+                continue
+            if isinstance(value, related_model):
+                related_instance = value
+            else:
+                try:
+                    related_instance = related_model.objects.get(pk=value)
+                except (related_model.DoesNotExist, ValueError, TypeError) as exc:
+                    raise ValueError(
+                        f'{related_model.__name__} com id "{value}" não encontrado.'
+                    ) from exc
+            value = related_instance
+        else:
+            try:
+                value = field.to_python(value)
+            except Exception as exc:  # pragma: no cover - conversão protegida
+                raise ValueError(
+                    f'Valor inválido para o campo "{field.verbose_name}".'
+                ) from exc
+
+        setattr(instance, field_name, value)
+        if field_name not in updated_fields:
+            updated_fields.append(field_name)
+
+    if updated_fields:
+        instance.save(update_fields=updated_fields)
+
+    return updated_fields
 
 # ------------------------------
 # VIEWS GERAIS
@@ -70,11 +147,41 @@ def cadastrar_loja(request):
 @staff_member_required
 def editar_loja(request, id):
     loja = get_object_or_404(Loja, id=id)
+    allowed_fields = ['nome', 'endereco', 'telefone', 'email']
+
+    if request.method in ('PUT', 'PATCH') or _is_json_request(request):
+        try:
+            payload = _load_json_payload(request)
+            updated_fields = _update_instance_from_data(loja, payload, allowed_fields)
+        except ValueError as exc:
+            return JsonResponse({'detalhe': str(exc)}, status=400)
+
+        response_data = {
+            'id': loja.id,
+            'updated_fields': updated_fields,
+            'loja': {
+                'nome': loja.nome,
+                'endereco': loja.endereco,
+                'telefone': loja.telefone,
+                'email': loja.email,
+            },
+        }
+        return JsonResponse(response_data)
     if request.method == 'POST':
         form = LojaForm(request.POST, instance=loja)
         if form.is_valid():
-            form.save()
-            return redirect('lista_lojas')
+            cleaned_payload = {
+                field_name: form.cleaned_data.get(field_name)
+                for field_name in form.fields
+                if field_name in form.cleaned_data
+            }
+            try:
+                _update_instance_from_data(loja, cleaned_payload, allowed_fields)
+            except ValueError as exc:
+                form.add_error(None, str(exc))
+            else:
+                messages.success(request, 'Loja atualizada com sucesso.')
+                return redirect('lista_lojas')
     else:
         form = LojaForm(instance=loja)
     return render(request, 'loja_app/loja_form.html', {'form': form})
@@ -115,6 +222,15 @@ def cadastrar_categoria(request):
     return render(request, 'loja_app/categoria_form.html', {'form': form})
 
 @staff_member_required
+def obter_categoria(request, id):
+    categoria = get_object_or_404(Categoria, id=id)
+    dados = {
+        'id': categoria.id,
+        'nome': categoria.nome,
+    }
+    return JsonResponse(dados)
+
+@staff_member_required
 def excluir_categoria(request, id):
     categoria = get_object_or_404(Categoria, id=id)
     # Verifica se há produtos usando essa categoria
@@ -152,14 +268,56 @@ def cadastrar_fornecedor(request):
 @staff_member_required
 def editar_fornecedor(request, id):
     fornecedor = get_object_or_404(Fornecedor, id=id)
+    allowed_fields = ['nome', 'cnpj', 'telefone', 'email']
+
+    if request.method in ('PUT', 'PATCH') or _is_json_request(request):
+        try:
+            payload = _load_json_payload(request)
+            updated_fields = _update_instance_from_data(fornecedor, payload, allowed_fields)
+        except ValueError as exc:
+            return JsonResponse({'detalhe': str(exc)}, status=400)
+
+        return JsonResponse({
+            'id': fornecedor.id,
+            'updated_fields': updated_fields,
+            'fornecedor': {
+                'nome': fornecedor.nome,
+                'cnpj': fornecedor.cnpj,
+                'telefone': fornecedor.telefone,
+                'email': fornecedor.email,
+            },
+        })
+
     if request.method == 'POST':
         form = FornecedorForm(request.POST, instance=fornecedor)
         if form.is_valid():
-            form.save()
-            return redirect('lista_fornecedores')
+           cleaned_payload = {
+                field_name: form.cleaned_data.get(field_name)
+                for field_name in form.fields
+                if field_name in form.cleaned_data
+            }
+        try:
+                _update_instance_from_data(fornecedor, cleaned_payload, allowed_fields)
+        except ValueError as exc:
+                form.add_error(None, str(exc))
+        else:
+                messages.success(request, 'Fornecedor atualizado com sucesso.')
+                return redirect('lista_fornecedores')
     else:
         form = FornecedorForm(instance=fornecedor)
     return render(request, 'loja_app/fornecedor_form.html', {'form': form})
+
+@staff_member_required
+def obter_fornecedor(request, id):
+    fornecedor = get_object_or_404(Fornecedor, id=id)
+    dados = {
+        'id': fornecedor.id,
+        'nome': fornecedor.nome,
+        'cnpj': fornecedor.cnpj,
+        'telefone': fornecedor.telefone,
+        'email': fornecedor.email,
+    }
+    return JsonResponse(dados)
 
 @staff_member_required
 def excluir_fornecedor(request, id):
@@ -199,14 +357,74 @@ def cadastrar_produto(request):
 @staff_member_required
 def editar_produto(request, id):
     produto = get_object_or_404(Produto, id=id)
+    allowed_fields = [
+        'nome', 'preco_compra', 'preco_venda', 'categoria', 'fornecedor', 'loja'
+    ]
+
+    if request.method in ('PUT', 'PATCH') or _is_json_request(request):
+        try:
+            payload = _load_json_payload(request)
+            updated_fields = _update_instance_from_data(produto, payload, allowed_fields)
+        except ValueError as exc:
+            return JsonResponse({'detalhe': str(exc)}, status=400)
+
+        return JsonResponse({
+            'id': produto.id,
+            'updated_fields': updated_fields,
+            'produto': {
+                'nome': produto.nome,
+                'preco_compra': str(produto.preco_compra),
+                'preco_venda': str(produto.preco_venda),
+                'categoria': produto.categoria.id if produto.categoria else None,
+                'fornecedor': produto.fornecedor.id if produto.fornecedor else None,
+                'loja': produto.loja.id if produto.loja else None,
+            },
+        })
+
     if request.method == 'POST':
         form = ProdutoForm(request.POST, instance=produto)
         if form.is_valid():
-            form.save()
-            return redirect('lista_produtos')
+            cleaned_payload = {
+                field_name: form.cleaned_data.get(field_name)
+                for field_name in form.fields
+                if field_name in form.cleaned_data
+            }
+            try:
+                _update_instance_from_data(produto, cleaned_payload, allowed_fields)
+            except ValueError as exc:
+                form.add_error(None, str(exc))
+            else:
+                messages.success(request, 'Produto atualizado com sucesso.')
+                return redirect('lista_produtos')
     else:
         form = ProdutoForm(instance=produto)
     return render(request, 'loja_app/produto_form.html', {'form': form})
+
+@staff_member_required
+def obter_produto(request, id):
+    produto = get_object_or_404(Produto.objects.select_related('categoria', 'fornecedor', 'estoque', 'loja'), id=id)
+    dados = {
+        'id': produto.id,
+        'nome': produto.nome,
+        'preco_compra': produto.preco_compra,
+        'preco_venda': produto.preco_venda,
+        'categoria': {
+            'id': produto.categoria.id if produto.categoria else None,
+            'nome': produto.categoria.nome if produto.categoria else None,
+        },
+        'fornecedor': {
+            'id': produto.fornecedor.id if produto.fornecedor else None,
+            'nome': produto.fornecedor.nome if produto.fornecedor else None,
+        },
+        'loja': {
+            'id': produto.loja.id,
+            'nome': produto.loja.nome,
+        },
+        'estoque': {
+            'quantidade': produto.estoque.quantidade if hasattr(produto, 'estoque') else None,
+        },
+    }
+    return JsonResponse(dados)
 
 @staff_member_required
 def excluir_produto(request, id):
@@ -272,14 +490,63 @@ def cadastrar_cliente(request):
 @staff_member_required
 def editar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id=id)
+    allowed_fields = [
+        'nome', 'cpf', 'telefone', 'rua', 'numero', 'bairro', 'estado'
+    ]
+
+    if request.method in ('PUT', 'PATCH') or _is_json_request(request):
+        try:
+            payload = _load_json_payload(request)
+            updated_fields = _update_instance_from_data(cliente, payload, allowed_fields)
+        except ValueError as exc:
+            return JsonResponse({'detalhe': str(exc)}, status=400)
+
+        return JsonResponse({
+            'id': cliente.id,
+            'updated_fields': updated_fields,
+            'cliente': {
+                'nome': cliente.nome,
+                'cpf': cliente.cpf,
+                'telefone': cliente.telefone,
+                'rua': cliente.rua,
+                'numero': cliente.numero,
+                'bairro': cliente.bairro,
+                'estado': cliente.estado,
+            },
+        })
     if request.method == 'POST':
         form = ClienteForm(request.POST, instance=cliente)
         if form.is_valid():
-            form.save()
-            return redirect('lista_clientes')
+            cleaned_payload = {
+                field_name: form.cleaned_data.get(field_name)
+                for field_name in form.fields
+                if field_name in form.cleaned_data
+            }
+            try:
+                _update_instance_from_data(cliente, cleaned_payload, allowed_fields)
+            except ValueError as exc:
+                form.add_error(None, str(exc))
+            else:
+                messages.success(request, 'Cliente atualizado com sucesso.')
+                return redirect('lista_clientes')
     else:
         form = ClienteForm(instance=cliente)
     return render(request, 'loja_app/cliente_form.html', {'form': form, 'titulo': 'Editar Cliente'})
+
+@staff_member_required
+def obter_cliente(request, id):
+    cliente = get_object_or_404(Cliente, id=id)
+    dados = {
+        'id': cliente.id,
+        'nome': cliente.nome,
+        'cpf': cliente.cpf,
+        'telefone': cliente.telefone,
+        'rua': cliente.rua,
+        'numero': cliente.numero,
+        'bairro': cliente.bairro,
+        'estado': cliente.estado,
+    }
+    return JsonResponse(dados)
 
 @staff_member_required
 def excluir_cliente(request, id):
@@ -336,6 +603,13 @@ def registrar_venda(request):
                     estoque.quantidade -= quantidade
                     estoque.save()
 
+                    MovimentacaoEstoque.objects.create(
+                        produto=produto,
+                        quantidade=quantidade,
+                        tipo='SAIDA',
+                        descricao=f"Venda #{venda.id}"
+                    )
+
                     valor_total_venda += item.preco_unitario * item.quantidade
 
             venda.valor_total = valor_total_venda
@@ -348,6 +622,7 @@ def registrar_venda(request):
     context = {'venda_form': venda_form, 'item_formset': item_formset, 'titulo': 'Registrar Nova Venda'}
     return render(request, 'loja_app/venda_form.html', context)
 
+
 @staff_member_required
 @transaction.atomic
 def cancelar_venda(request, venda_id):
@@ -357,7 +632,10 @@ def cancelar_venda(request, venda_id):
         return redirect('lista_vendas')
 
     if request.method == 'POST':
-        for item in venda.itens.all():
+       venda_identificador = venda.id
+       itens_venda = list(venda.itens.select_related('produto', 'produto__estoque'))
+
+       for item in itens_venda:
             estoque = item.produto.estoque
             estoque.quantidade += item.quantidade
             estoque.save()
@@ -365,14 +643,68 @@ def cancelar_venda(request, venda_id):
                 produto=item.produto,
                 quantidade=item.quantidade,
                 tipo='ENTRADA',
-                descricao=f'Estorno por cancelamento da Venda #{venda.id}'
+                descricao=f'Estorno por cancelamento da Venda #{venda_identificador}'
             )
-        venda.status = 'CANCELADA'
-        venda.save()
-        messages.success(request, f'Venda #{venda.id} cancelada com sucesso. O estoque foi atualizado.')
-        return redirect('lista_vendas')
+    
+    venda.itens.all().delete()
+    venda.delete()
+    messages.success(
+            request,
+            f'Venda #{venda_identificador} cancelada e removida com sucesso. O estoque foi atualizado.'
+        )
+    return redirect('lista_vendas')
 
     return render(request, 'loja_app/confirm_cancel.html', {'venda': venda})
+
+
+# ------------------------------
+# RELATÓRIOS / APIs
+# ------------------------------
+
+@staff_member_required
+def relatorio_vendas_cliente(request, cliente_id):
+    """Retorna as vendas de um cliente agregando itens no formato "Produto (xQuantidade)"."""
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+
+    vendas_queryset = (
+        Venda.objects.filter(cliente_id=cliente_id)
+        .select_related('loja')
+        .prefetch_related(
+            Prefetch(
+                'itens',
+                queryset=ItensVenda.objects.select_related('produto').order_by('produto__nome', 'id'),
+            )
+        )
+        .order_by('-data_venda')
+    )
+
+    vendas_formatadas = []
+    for venda in vendas_queryset:
+        itens_descricao = [
+            f"{item.produto.nome} (x{item.quantidade})"
+            for item in venda.itens.all()
+        ]
+
+        vendas_formatadas.append({
+            'id': venda.id,
+            'loja': venda.loja.nome if venda.loja else None,
+            'data_venda': venda.data_venda.isoformat(),
+            'valor_total': str(venda.valor_total),
+            'status': venda.get_status_display(),
+            'itens_descricao': ', '.join(itens_descricao),
+        })
+
+    resposta = {
+        'cliente': {
+            'id': cliente.id,
+            'nome': cliente.nome,
+        },
+        'vendas': vendas_formatadas,
+    }
+
+    return JsonResponse(resposta)
+
+
 
 
 # ------------------------------

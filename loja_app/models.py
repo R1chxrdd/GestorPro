@@ -1,3 +1,4 @@
+from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -8,7 +9,17 @@ class Loja(models.Model):
     endereco = models.CharField(max_length=200, verbose_name="Endereço")
     telefone = models.CharField(max_length=15, verbose_name="Telefone", blank=True, null=True)
     email = models.EmailField(verbose_name="E-mail", blank=True, null=True)
-
+    cnpj_loja = models.CharField(
+        max_length=18,
+        verbose_name="CNPJ da Loja",
+        unique=True,
+        validators=[
+            RegexValidator(
+                regex=r"^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$",
+                message="Informe um CNPJ válido no formato 00.000.000/0000-00.",
+            )
+        ],
+    )
     def __str__(self):
         return self.nome
 

@@ -11,9 +11,9 @@
         <h2>Cancelar Venda #{{ venda.id }}</h2>
         <p>
             Tem certeza de que deseja cancelar esta venda?
-            <strong>Esta ação não pode ser desfeita.</strong>
+           <strong>O estoque será estornado e a venda será removida do histórico.</strong>
         </p>
-        <p>Os itens abaixo serão retornados ao estoque:</p>
+        <p>Os itens abaixo serão retornados ao estoque antes da exclusão:</p>
         <ul>
             {% for item in venda.itens.all %}
                 <li>{{ item.quantidade }}x {{ item.produto.nome }}</li>
